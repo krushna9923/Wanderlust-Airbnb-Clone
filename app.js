@@ -29,7 +29,8 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const bookingRouter = require("./routes/booking.js");//for booking system
 
-
+const listingsController = require("./controllers/listings.js");
+const wrapAsync = require("./utils/wrapAsync.js");
 
 main()
    .then(() =>{
@@ -96,13 +97,9 @@ app.use((req,res,next) =>{
 
 });
 
-console.log("BEFORE ROOT ROUTE");
-app.get("/", (req, res) => {
-   console.log("ROOT ROUTE HIT");
-    res.send("ROOT ROUTE WORKING");
-});
 
-console.log("AFTER ROOT ROUTE");
+app.get("/", wrapAsync(listingsController.index));
+
 
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
