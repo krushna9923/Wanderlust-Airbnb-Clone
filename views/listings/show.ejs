@@ -1,0 +1,245 @@
+<% layout("layouts/boilerplate") %>
+<div class="row mt-3">
+  <div class="col-8 offset-3">
+  <h3><%= listing.title %></h3>
+
+  
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const reel = document.getElementById("slotReel");
+  if (!reel) return;
+
+  const numbers = ["0","1","2","3","4","5"];
+
+  for(let i=0;i<40;i++){
+      const div = document.createElement("div");
+      div.className="slot-number";
+      div.textContent = numbers[i % numbers.length];
+      reel.appendChild(div);
+  }
+
+  const target = Math.floor(finalRating);
+  const itemHeight = 60;
+  const stopPosition = (40 - target - 1) * itemHeight;
+
+  setTimeout(()=>{
+      reel.style.transform = `translateY(-${stopPosition}px)`;
+  },300);
+
+});
+</script>
+
+
+  <div class="card col-6 offset-3 show-card listing-card">
+      <img 
+        src="<%= listing.image.url %>" 
+        class="card-img-top show-img" 
+        alt="listing_image"
+      />
+      <div class="card-body">
+       
+         <p class="card-text"></p>Owned By <i><%= listing.owner.username%></i><br>
+         <p class="card-text"></p><%= listing.description %><br>
+         <p class="card-text"></p>₹ <%= Number(listing.price).toLocaleString("en-IN") %><br>
+         
+         <p class="card-text"></p><%= listing.country %>
+        
+         
+      </div>
+    </div>
+   
+   <br />
+
+  
+
+   <% if(currUser && listing.owner._id.equals(currUser._id)){%>
+   <div class="btns">
+     <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
+     <form method="POST" action="/listings/<%=listing._id %>?_method=DELETE">
+       <button class="btn btn-dark  ms-3">Delete</button>
+
+     </form>
+  </div> 
+  <% }%>
+  
+  <div class="col-8 offset-3 mb-3">
+    <div id="map" style="height:400px; width:100%; margin-top:20px;"></div>
+  </div>
+
+  <% if(currUser && !listing.owner._id.equals(currUser._id)) { %>
+  <div class="col-6 offset-3 mb-3">
+      <hr/>
+      <h4>Book this listing</h4>
+      <form action="/listings/<%= listing._id %>/bookings" method="POST">
+          <div class="mb-3">
+              <label class="form-label">Check-in Date</label>
+              <input type="date" name="checkIn" class="form-control" required />
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Check-out Date</label>
+              <input type="date" name="checkOut" class="form-control" required />
+          </div>
+          <p>₹ <%= Number(listing.price).toLocaleString("en-IN") %> /night</p>
+          <button class="btn btn-danger w-100">Book Now</button>
+      </form>
+  </div>
+  <% } %>
+
+  <div class="col-8 offset-3 mb-3">
+    <hr/>
+    <% if(currUser)  {%>
+    <h4>Leave a Review</h4>
+    <form action="/listings/<%= listing._id%>/reviews" method="POST" novalidate class="needs-validation">
+      <div class="mb-3 mt-3">
+  <label class="form-label">Rating</label>
+
+  <div class="rating-stars">
+      <input type="hidden" name="review[rating]" id="ratingValue" required>
+
+      <span class="star" data-value="1">★</span>
+      <span class="star" data-value="2">★</span>
+      <span class="star" data-value="3">★</span>
+      <span class="star" data-value="4">★</span>
+      <span class="star" data-value="5">★</span>
+  </div>
+</div>
+
+      <div class="mb-3  mt-3">
+        <label for="comment" class="form-label"> Comments</label>
+        <textarea name="review[comment]" id="comment" cols="30" rows="5"class="form-control" required></textarea>
+        <div class="invalid-feedback">Please add some comments for review</div>
+      </div>
+      <button class="btn btn-outline-dark">Submit</button>
+
+    </form>
+    <% }%>
+    
+
+    <p>All Reviews</p>
+    <div class="row">
+    <% for(let review of listing.reviews) { %>
+      <div class="card col-5 ms-3 mb-3">
+        <div class="card-body">
+          <h5 class="card-title"><%= review.author.username%></h5>
+          <div class="display-stars" data-rating="<%= review.rating %>"></div>
+
+          <p
+            class="starability-result card-text"
+            data-rating="<%= review.rating %>"
+
+          ></p>
+          <p class="card-text"><%= review.comment %></p>
+          
+         
+          
+          <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+            <button class="btn btn-sm btn-dark">Delete</button>
+          </form>
+        </div>
+      </div> 
+    <% } %>
+</div>
+
+    
+   
+   
+
+  </div>
+</div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+    const stars = document.querySelectorAll(".star");
+    const ratingInput = document.getElementById("ratingValue");
+
+    let rating = 0;
+
+    stars.forEach(star => {
+
+        star.addEventListener("mouseover", ()=>{
+            fillStars(star.dataset.value);
+        });
+
+        star.addEventListener("mouseout", ()=>{
+            fillStars(rating);
+        });
+
+        star.addEventListener("click", ()=>{
+            rating = star.dataset.value;
+            ratingInput.value = rating;
+            fillStars(rating);
+        });
+
+    });
+
+    function fillStars(value){
+        stars.forEach(s=>{
+            s.classList.remove("hover","selected");
+
+            if(s.dataset.value <= value){
+                s.classList.add(value == rating ? "selected":"hover");
+            }
+        });
+    }
+});
+</script>
+<script>
+document.querySelectorAll(".display-stars").forEach(container => {
+    const rating = container.dataset.rating;
+    let html = "";
+
+    for(let i=1;i<=5;i++){
+        if(i <= rating){
+            html += '<span class="filled">★</span>';
+        }else{
+            html += '<span>★</span>';
+        }
+    }
+
+    container.innerHTML = html;
+});
+</script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  
+
+var listing = JSON.parse('<%- JSON.stringify(listing) %>');
+
+if (listing.location && listing.location.coordinates) {
+  var lat = listing.location.coordinates[1]; // latitude
+  var lng = listing.location.coordinates[0]; // longitude
+
+  var map = L.map('map').setView([lat, lng], 13);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  L.marker([lat, lng])
+    .addTo(map)
+    .bindPopup(`
+      <div style="text-align:center;">
+        <h3>${listing.title}</h3>
+        <img src="${listing.image?.url || '/default.jpg'}" width="120" style="border-radius:8px;"/>
+        <p>${listing.description || "No description available"}</p>
+        <p><strong>₹${Number(listing.price).toLocaleString('en-IN')}</strong></p>
+        <a href="/listings/${listing._id}">View Details</a>
+      </div>
+    `)
+    .openPopup();
+} else {
+  document.getElementById("map").innerHTML =
+    "<p style='text-align:center;'>No map available for this listing</p>";
+}
+
+
+
+</script>

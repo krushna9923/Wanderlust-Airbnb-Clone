@@ -1,0 +1,28 @@
+.rating-stars{
+    font-size:34px;
+    display:inline-block;
+    cursor:pointer;
+    user-select:none;
+}
+
+.star{
+    color:#dadada;
+    transition:color .2s ease, transform .15s ease;
+}
+
+.star.hover{
+    color:#ffc107;
+    transform:scale(1.15);
+}
+
+.star.selected{
+    color:#ffc107;
+}
+.display-stars{
+    font-size:22px;
+    color:#ddd;
+}
+
+.display-stars .filled{
+    color:#ffc107;
+}
