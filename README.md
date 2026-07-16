@@ -18,7 +18,11 @@
 
 ## 📸 Screenshots
 
-> _(Add screenshots of your home page, listing detail, booking page, etc.)_
+> <img width="1907" height="1085" alt="Screenshot 2026-07-11 095424" src="https://github.com/user-attachments/assets/742b0e92-0241-41ff-8aad-af8bafb15ea8" />
+<img width="1887" height="1023" alt="image" src="https://github.com/user-attachments/assets/8c115714-2d5a-4e8f-8afe-f2b383e16b3c" />
+<img width="1920" height="1140" alt="Screenshot 2026-07-11 095546" src="https://github.com/user-attachments/assets/564d2c4d-7deb-45b5-8eab-cedb564e6191" />
+
+
 
 ---
 
