@@ -12,7 +12,7 @@
 
 ## 🚀 Live Demo
 
-🔗 [View Live Project](https://your-deployment-link.com) <!-- Replace with your actual link -->
+🔗 [View Live Project](https://wanderlust-airbnb-clone-nu6j.onrender.com/)
 
 ---
 
